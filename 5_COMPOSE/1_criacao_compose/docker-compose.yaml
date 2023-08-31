@@ -1,0 +1,28 @@
+version: '3.3' # versão do docker compose
+
+services: # sesão de serviços da aplicação
+  db: # nome para o container de MySQL que eu defini
+    image: mysql:5.7 # FROM mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always # todas alterações são sempre aplicadas
+    environment: # variáveis de ambiente
+      MYSQL_ROOT_PASSWORD: wordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: matheus
+      MYSQL_PASSWORD: secret
+
+  wordpress:
+    depends_on: # serviços que o wordpress depende
+      - db
+    image: wordpress:latest
+    ports:
+      - "8000:80" # porta que será usado a aplicação
+    restart: always
+    environment:  # variáveis de ambiente p/ conexão no Mysql
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: matheus
+      WORDPRESS_DB_PASSWORD: secret
+      WORDPRESS_DB_NAME: wordpress
+volumes: # é obrigatório para o compose iniciar um volume
+  db_data: {}
